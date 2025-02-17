@@ -10,13 +10,13 @@ export const useConsentStore = defineStore('consent', {
   }),
 
   actions: {
-    async fetchConsentInfo() {
+    async fetchConsentInfo(clientId: string) {
       this.loading = true;
       this.error = null;
       try {
-        this.consentInfo = await consentService.getConsentInfo();
+        this.consentInfo = await consentService.getConsentInfo(clientId);
       } catch (err) {
-        this.error = 'Failed to load consent information';
+        this.error = 'Không tìm thấy thông tin ứng dụng';
         console.error(err);
       } finally {
         this.loading = false;

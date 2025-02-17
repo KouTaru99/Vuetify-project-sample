@@ -25,7 +25,8 @@ export default createVuetify({
       },
       dark: {
         colors: {
-          primary: '#8ab4f8',  // Google's blue color in dark mode
+          primary: '#d50000',  // Google's blue color in dark mode,
+          secondary: '#111113',
           surface: '#202124',  // Dark background
           'surface-variant': '#303134',  // Slightly lighter dark
         },
