@@ -1,7 +1,12 @@
 <template>
+  <head>
+    <meta name="description" content="Consent page for application access">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  </head>
   <div class="fill-height" :class="{ 'd-flex flex-column': isMobile }">
-    <v-container :class="{ 'flex-grow-1': isMobile }" class="fill-height">
-      <v-row justify="center" align="center" class="fill-height" no-gutters>
+    <v-container :class="{ 'flex-grow-1': isMobile }" class="fill-height" style="min-height: 100vh;">
+      <v-row justify="center" align="center" style="min-height: inherit;">
         <v-col cols="12" sm="10" md="8" lg="6" class="d-flex flex-column">
           <!-- Desktop Layout -->
           <v-card v-if="!isMobile" class="pa-8 mb-4" elevation="2" rounded="lg">
@@ -9,7 +14,7 @@
             <div class="mb-8">
               <div class="d-flex align-center mb-2">
                 <v-img
-                  src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_dark_color_92x30dp.png"
+                  src="/images/Google-Chrome-icon.png"
                   class="mr-3"
                   width="75"
                   height="24"
@@ -27,21 +32,15 @@
                   v-if="consentStore.consentInfo?.appLogo"
                   :src="consentStore.consentInfo.appLogo"
                   class="mb-4"
-                  width="40"
-                  height="40"
-                  cover
+                  :width="32"
+                  :height="32"
+                  loading="lazy"
+                  contain
+                  :alt="consentStore.consentInfo?.appName"
                 />
                 <div class="text-h5 mb-4">
                   Đăng nhập vào {{ consentStore.consentInfo?.appName }}
                 </div>
-                <v-chip
-                  variant="outlined"
-                  color="surface-variant"
-                  class="px-3 py-2"
-                >
-                  <v-icon start icon="mdi-account" size="small" />
-                  {{ userEmail }}
-                </v-chip>
               </div>
 
               <!-- Right Column -->
@@ -93,11 +92,12 @@
             <!-- Google Logo & Title -->
             <div class="d-flex align-center mb-4">
               <v-img
-                src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_dark_color_92x30dp.png"
+                src="/images/Google-Chrome-icon.png"
                 width="75"
                 height="24"
                 alt="Google"
                 class="mr-2"
+                loading="lazy"
               />
             </div>
             <div class="text-h6 mb-6">Đăng nhập bằng Google</div>
@@ -108,33 +108,16 @@
                 v-if="consentStore.consentInfo?.appLogo"
                 :src="consentStore.consentInfo.appLogo"
                 class="mb-4"
-                width="40"
-                height="40"
-                cover
+                :width="32"
+                :height="32"
+                loading="lazy"
+                contain
+                :alt="consentStore.consentInfo?.appName"
               />
               <div class="text-h5 mb-4">
                 Đăng nhập vào {{ consentStore.consentInfo?.appName }}
               </div>
             </div>
-
-            <!-- User Email -->
-            <div class="mb-6">
-              <v-menu>
-                <template v-slot:activator="{ props }">
-                  <v-chip
-                    v-bind="props"
-                    variant="outlined"
-                    color="surface-variant"
-                    class="px-3 py-2"
-                  >
-                    <v-icon start icon="mdi-account" size="small" />
-                    {{ userEmail }}
-                  </v-chip>
-                </template>
-                <!-- Add email selection menu if needed -->
-              </v-menu>
-            </div>
-
             <!-- Consent Text -->
             <div class="text-body-1 mb-6">
               Nếu bạn tiếp tục, Google sẽ chia sẻ tên, địa chỉ email, lựa chọn ưu tiên về ngôn ngữ và ảnh hồ sơ của bạn với {{ consentStore.consentInfo?.appName }}. Hãy xem
@@ -258,11 +241,19 @@
     >
       {{ consentStore.error }}
     </v-snackbar>
+
+    <!-- Add preload link for critical resources -->
+    <link
+      v-if="typeof consentStore.consentInfo?.appLogo === 'string'"
+      rel="preload"
+      :href="consentStore.consentInfo?.appLogo"
+      as="image"
+    >
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { useConsentStore } from '@/stores/consent';
@@ -273,8 +264,6 @@ const consentStore = useConsentStore();
 const { mobile } = useDisplay();
 const showError = computed(() => !!consentStore.error);
 const isMobile = computed(() => mobile.value);
-
-const userEmail = ref('nguyentamsang030399@gmail.com');
 
 onMounted(async () => {
   const clientId = route.query.client_id as string;

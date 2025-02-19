@@ -3,7 +3,7 @@ import type { ConsentInfo } from '@/types/consent'
 export const MOCK_APPS: Record<string, ConsentInfo> = {
   'client_123': {
     appName: 'Gmail',
-    appLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png',
+    appLogo: '/images/Gmail-icon.png',
     scopes: [
       {
         id: 'email',
@@ -20,8 +20,8 @@ export const MOCK_APPS: Record<string, ConsentInfo> = {
     termsOfServiceUrl: 'https://policies.google.com/terms'
   },
   'client_456': {
-    appName: 'Spotify',
-    appLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/1982px-Spotify_icon.svg.png',
+    appName: 'Facebook',
+    appLogo: '/images/social-facebook-box-blue-icon.png',
     scopes: [
       {
         id: 'user-library',
@@ -39,12 +39,12 @@ export const MOCK_APPS: Record<string, ConsentInfo> = {
         description: 'Xem lịch sử bài hát bạn đã nghe'
       }
     ],
-    privacyPolicyUrl: 'https://www.spotify.com/legal/privacy-policy/',
-    termsOfServiceUrl: 'https://www.spotify.com/legal/end-user-agreement/'
+    privacyPolicyUrl: 'https://www.fakebook.com/legal/privacy-policy/',
+    termsOfServiceUrl: 'https://www.fakebook.com/legal/end-user-agreement/'
   },
   'client_789': {
-    appName: 'Slack',
-    appLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png',
+    appName: 'Tiktok',
+    appLogo: '/images/tiktok-icon.png',
     scopes: [
       {
         id: 'channels:read',
@@ -67,8 +67,8 @@ export const MOCK_APPS: Record<string, ConsentInfo> = {
         description: 'Xem thông tin cơ bản của người dùng khác trong workspace'
       }
     ],
-    privacyPolicyUrl: 'https://slack.com/trust/privacy/privacy-policy',
-    termsOfServiceUrl: 'https://slack.com/terms-of-service'
+    privacyPolicyUrl: 'https://tiktok.com/trust/privacy/privacy-policy',
+    termsOfServiceUrl: 'https://tiktok.com/terms-of-service'
   }
 }
 

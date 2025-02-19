@@ -6,6 +6,8 @@ import Layouts from 'vite-plugin-vue-layouts'
 import Vue from '@vitejs/plugin-vue'
 import VueRouter from 'unplugin-vue-router/vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import { VitePWA } from 'vite-plugin-pwa'
+import compression from 'vite-plugin-compression'
 
 // Utilities
 import { defineConfig } from 'vite'
@@ -42,20 +44,45 @@ export default defineConfig({
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     Vuetify({
-      autoImport: true,
+      autoImport: false,
       styles: {
         configFile: 'src/styles/settings.scss',
       },
     }),
     Fonts({
       google: {
-        families: [ {
+        families: [{
           name: 'Roboto',
-          styles: 'wght@100;300;400;500;700;900',
+          styles: 'wght@400;500;700',
         }],
       },
     }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+      }
+    }),
+    compression()
   ],
+  build: {
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['vue'],
+          'vuetify': ['vuetify'],
+        }
+      }
+    },
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    }
+  },
   define: { 'process.env': {} },
   resolve: {
     alias: {
