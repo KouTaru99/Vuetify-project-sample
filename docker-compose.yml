@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vue-consent-app
+    restart: unless-stopped
+    ports:
+      - "8085:80"
+    environment:
+      - API_URL=https://api.example.com  # Thay đổi theo môi trường
+    volumes:
+      - ./public/config.js:/usr/share/nginx/html/config.js:ro  # Có thể override config.js
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nếu cần một API mock hoặc service khác, có thể thêm ở đây
+  # api:
+  #   image: node:18-alpine
+  #   container_name: api-mock
+  #   working_dir: /app
+  #   volumes:
+  #     - ./api:/app
+  #   command: npm run start
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  node_modules: 

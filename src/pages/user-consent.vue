@@ -272,6 +272,7 @@ onMounted(async () => {
     return;
   }
   await consentStore.fetchConsentInfo(clientId);
+ debugger
 });
 
 const handleContinue = () => {
