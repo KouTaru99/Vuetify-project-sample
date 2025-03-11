@@ -6,6 +6,7 @@ export interface ConsentInfo {
     name: string;
     description: string;
   }>;
+  scope?: string;
   privacyPolicyUrl: string;
   termsOfServiceUrl: string;
 }

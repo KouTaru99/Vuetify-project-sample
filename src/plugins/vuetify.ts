@@ -10,7 +10,7 @@
 
 // Composables
 import { createVuetify } from 'vuetify'
-import { VApp, VMain, VContainer, VRow, VCol, VCard, VImg, VBtn, VIcon, VOverlay, VProgressCircular, VSnackbar } from 'vuetify/components'
+import { VApp, VMain, VContainer, VRow, VCol, VCard, VImg, VBtn, VIcon, VOverlay, VProgressCircular, VSnackbar, VSelect } from 'vuetify/components'
 import { Ripple } from 'vuetify/directives'
 
 // Import styles một lần
@@ -30,7 +30,8 @@ export default createVuetify({
     VIcon,
     VOverlay,
     VProgressCircular,
-    VSnackbar
+    VSnackbar,
+    VSelect
   },
   directives: {
     Ripple: {
@@ -39,16 +40,8 @@ export default createVuetify({
     },
   },
   theme: {
-    defaultTheme: 'dark',
+    defaultTheme: 'light',
     themes: {
-      dark: {
-        colors: {
-          primary: '#d50000',
-          secondary: '#111113',
-          surface: '#202124',
-          'surface-variant': '#303134',
-        },
-      },
     },
   },
 })

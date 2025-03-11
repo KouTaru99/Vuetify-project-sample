@@ -1,227 +1,275 @@
 <template>
-  <head>
-    <meta name="description" content="Consent page for application access">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  </head>
   <div class="fill-height" :class="{ 'd-flex flex-column': isMobile }">
-    <v-container :class="{ 'flex-grow-1': isMobile }" class="fill-height" style="min-height: 100vh;">
-      <v-row justify="center" align="center" style="min-height: inherit;">
+    <v-container :class="{ 'flex-grow-1': isMobile }" class="fill-height">
+      <v-row justify="center" align="center" class="h-100">
         <v-col cols="12" sm="10" md="8" lg="6" class="d-flex flex-column">
-          <!-- Desktop Layout -->
-          <v-card v-if="!isMobile" class="pa-8 mb-4" elevation="2" rounded="lg">
-            <!-- Card Header -->
-            <div class="mb-8">
-              <div class="d-flex align-center mb-2">
-                <v-img
-                  src="/images/Google-Chrome-icon.png"
-                  class="mr-3"
-                  width="75"
-                  height="24"
-                  alt="Google"
-                />
+          <!-- DESKTOP LAYOUT -->
+          <template v-if="!isMobile">
+            <!-- Card wrapper (header + content) -->
+            <v-card class="pa-4 mb-4" elevation="2" rounded="lg">
+              <!-- Header -->
+              <div class="mb-8">
+                <div class="d-flex align-center">
+                  <img
+                    src="/images/logo.png"
+                    class="mr-3 mb-3"
+                    alt="Vittel"
+                    width="40"
+                    height="12"
+                  >
+                  <span class="text-caption text-medium-emphasis">
+                    {{ $t('consent_page.consent_label') }}
+                  </span>
+                </div>
+                <v-divider class="mx-n4" />
               </div>
-              <div class="text-h6">Đăng nhập bằng Google</div>
+
+              <!-- Content -->
+              <div class="d-flex">
+                <!-- Left Column -->
+                <div class="mr-8 min-width-200">
+                  <v-img
+                    v-if="consentStore.consentInfo?.appLogo"
+                    :src="consentStore.consentInfo.appLogo"
+                    class="mb-4"
+                    width="32"
+                    height="32"
+                    loading="lazy"
+                    :alt="consentStore.consentInfo?.appName"
+                  />
+                  <div class="text-h6 mb-4">
+                    {{ $t('consent_page.consent_title', { appName: consentStore.consentInfo?.appName}) }}
+                  </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="flex-grow-1">
+                  <div class="mb-6">
+                    <div class="text-body-2 mb-4">
+                      {{ $t('consent_page.consent_notice_text', { appName: consentStore.consentInfo?.appName}) }}
+                      <br>
+                      <span v-if="consentStore.consentInfo?.scope">
+                        {{ $t('consent_page.consent_scope_text', { scope: $t(consentStore.consentInfo?.scope)}) }}
+                      </span>
+                      <br>
+                    </div>
+                    <div class="text-body-2 mb-4">
+                      {{ $t('consent_page.consent_attention_text', { appName: consentStore.consentInfo?.appName}) }}
+                    </div>
+                    <div class="text-body-2 mb-4">
+                      <span v-if="consentStore.consentInfo?.privacyPolicyUrl">
+                        {{ $t('consent_page.please_see') }}
+                        <a
+                          :href="'123jsdhfkhsdfk'"
+                          class="text-decoration-none text-primary"
+                        >
+                          {{ $t('consent_page.consent_policy_link', { appName: consentStore.consentInfo?.appName}) }}
+                        </a>
+                      </span>
+
+                      <!-- Action Buttons -->
+                      <v-row class="flex-nowrap ga-3 mt-6" no-gutters>
+                        <v-col>
+                          <v-btn
+                            color="secondary"
+                            class="mr-4 text-none"
+                            width="100%"
+                            @click="handleCancel"
+                          >
+                            {{ $t('consent_page.cancel_btn') }}
+                          </v-btn>
+                        </v-col>
+                        <v-col>
+                          <v-btn
+                            color="primary text-none"
+                            width="100%"
+                            @click="handleContinue"
+                          >
+                            {{ $t('consent_page.accept_btn') }}
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </v-card>
+
+            <!-- Desktop Footer (outside card) -->
+            <div class="text-center">
+              <template v-if="!consentStore.consentInfo">
+                <div class="d-flex justify-space-between align-center">
+                  <div>
+                    <v-select
+                      :multiple="false"
+                      variant="plain"
+                      :width="150"
+                      density="compact"
+                      :items="languageItems"
+                      :hide-details="true"
+                      class="vcs-select"
+                      @update:model-value="changeLanguage()"
+                      value="en"
+                    >
+                      <template #selection="{ item }">
+                        <span>{{ $t(item.props.title) }}</span>
+                      </template>
+
+                      <template #item="{ item, props }">
+                        <v-list-item
+                          v-bind="props"
+                          :title="$t(item.title)"
+                        />
+                      </template>
+                    </v-select>
+                  </div>
+                  <div>
+                    <a
+                      :href="'123jsdhfkhsdfk'"
+                      target="_blank"
+                      class="text-decoration-none text-primary text-body-2"
+                    >
+                      {{ $t('consent_page.TAS_terms_of_service') }}
+                    </a>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <!-- MOBILE LAYOUT -->
+          <template v-else>
+            <!-- Mobile Header (fixed at top) -->
+            <div class="d-flex align-center justify-center position-fixed top-0 right-0 left-0 bg-surface elevation-1">
+              <div class="w-100 pa-4 border-b">
+                <img
+                  src="/images/logo.png"
+                  alt="Vittel"
+                  width="40"
+                  height="12"
+                  class="mr-3"
+                >
+                <span class="text-caption text-medium-emphasis">
+                  {{ $t('consent_page.consent_label') }}
+                </span>
+              </div>
             </div>
 
-            <!-- Card Body -->
-            <div class="d-flex">
-              <!-- Left Column -->
-              <div class="mr-8" style="min-width: 200px">
+            <!-- Mobile Content (scrollable middle) -->
+            <div class="pa-4 mt-16">
+              <!-- App Logo & Name -->
+              <div class="mb-6">
                 <v-img
                   v-if="consentStore.consentInfo?.appLogo"
                   :src="consentStore.consentInfo.appLogo"
                   class="mb-4"
-                  :width="32"
-                  :height="32"
+                  width="32"
+                  height="32"
                   loading="lazy"
-                  contain
                   :alt="consentStore.consentInfo?.appName"
                 />
-                <div class="text-h5 mb-4">
-                  Đăng nhập vào {{ consentStore.consentInfo?.appName }}
+                <div class="text-h6 mb-4">
+                  {{ $t('consent_page.consent_title', { appName: consentStore.consentInfo?.appName}) }}
                 </div>
               </div>
 
-              <!-- Right Column -->
-              <div class="flex-grow-1">
-                <div class="text-body-1 mb-6">
-                  Nếu bạn tiếp tục, Google sẽ chia sẻ tên, địa chỉ email, lựa chọn ưu tiên về ngôn ngữ và ảnh hồ sơ của bạn với {{ consentStore.consentInfo?.appName }}. Hãy xem
-                  <a :href="consentStore.consentInfo?.privacyPolicyUrl" class="text-primary text-decoration-none">
-                    Chính sách quyền riêng tư
-                  </a>
-                  và
-                  <a :href="consentStore.consentInfo?.termsOfServiceUrl" class="text-primary text-decoration-none">
-                    Điều khoản dịch vụ
-                  </a>
-                  của {{ consentStore.consentInfo?.appName }}.
+              <!-- Consent Text -->
+              <div class="mb-6">
+                <div class="text-body-2 mb-4">
+                  {{ $t('consent_page.consent_notice_text', { appName: consentStore.consentInfo?.appName}) }}
+                  <br>
+                  <span v-if="consentStore.consentInfo?.scope">
+                    {{ $t('consent_page.consent_scope_text', { scope: $t(consentStore.consentInfo?.scope)}) }}
+                  </span>
+                  <br>
                 </div>
-
-                <!-- Additional Info -->
-                <div class="text-body-2 mb-6">
-                  Bạn có thể quản lý tính năng Đăng nhập bằng Google trong
-                  <a href="https://myaccount.google.com" class="text-primary text-decoration-none">
-                    Tài khoản Google
-                  </a>
-                  của mình.
+                <v-divider class="my-4" />
+                <div class="text-body-2 mb-4">
+                  {{ $t('consent_page.consent_attention_text', { appName: consentStore.consentInfo?.appName}) }}
                 </div>
+                <div class="text-body-2 mb-4">
+                  <span v-if="consentStore.consentInfo?.privacyPolicyUrl">
+                    {{ $t('consent_page.please_see') }}
+                    <a
+                      :href="'123jsdhfkhsdfk'"
+                      class="text-decoration-none text-primary"
+                    >
+                      {{ $t('consent_page.consent_policy_link', { appName: consentStore.consentInfo?.appName}) }}
+                    </a>
+                  </span>
+                </div>
+              </div>
 
-                <!-- Action Buttons -->
-                <div class="d-flex justify-end mt-6">
+              <!-- Mobile Action Buttons (with space for footer) -->
+              <v-row class="flex-nowrap ga-3 mb-16 mt-28" no-gutters>
+                <v-col>
                   <v-btn
-                    variant="text"
-                    color="primary"
+                    color="secondary text-none"
                     class="mr-4"
+                    width="100%"
                     @click="handleCancel"
                   >
-                    Hủy
+                    {{ $t('consent_page.cancel_btn') }}
                   </v-btn>
+                </v-col>
+                <v-col>
                   <v-btn
-                    color="primary"
+                    color="primary text-none"
+                    width="100%"
                     @click="handleContinue"
                   >
-                    Tiếp tục
+                    {{ $t('consent_page.accept_btn') }}
                   </v-btn>
-                </div>
+                </v-col>
+              </v-row>
+            </div>
+
+            <!-- Mobile Footer (fixed at bottom) -->
+            <div class="d-flex justify-center align-center position-fixed bottom-0 right-0 left-0 bg-surface elevation-1">
+              <div class="w-100 pa-4 border-t">
+                <template v-if="!consentStore.consentInfo">
+                  <div class="d-flex justify-space-between align-center">
+                    <div>
+                      <v-select
+                        :multiple="false"
+                        variant="plain"
+                        :width="150"
+                        density="compact"
+                        :items="languageItems"
+                        :hide-details="true"
+                        class="vcs-select"
+                        @update:model-value="changeLanguage()"
+                        value="en"
+                      >
+                        <template #selection="{ item }">
+                          <span>{{ $t(item.props.title) }}</span>
+                        </template>
+
+                        <template #item="{ item, props }">
+                          <v-list-item
+                            v-bind="props"
+                            :title="$t(item.title)"
+                          />
+                        </template>
+                      </v-select>
+                    </div>
+                    <a
+                      :href="'123jsdhfkhsdfk'"
+                      target="_blank"
+                      class="text-decoration-none text-primary text-body-2"
+                    >
+                      {{ $t('consent_page.TAS_terms_of_service') }}
+                    </a>
+                  </div>
+                </template>
               </div>
             </div>
-          </v-card>
-
-          <!-- Mobile Layout -->
-          <div v-else class="pa-4">
-            <!-- Google Logo & Title -->
-            <div class="d-flex align-center mb-4">
-              <v-img
-                src="/images/Google-Chrome-icon.png"
-                width="75"
-                height="24"
-                alt="Google"
-                class="mr-2"
-                loading="lazy"
-              />
-            </div>
-            <div class="text-h6 mb-6">Đăng nhập bằng Google</div>
-
-            <!-- App Logo & Name -->
-            <div class="mb-6">
-              <v-img
-                v-if="consentStore.consentInfo?.appLogo"
-                :src="consentStore.consentInfo.appLogo"
-                class="mb-4"
-                :width="32"
-                :height="32"
-                loading="lazy"
-                contain
-                :alt="consentStore.consentInfo?.appName"
-              />
-              <div class="text-h5 mb-4">
-                Đăng nhập vào {{ consentStore.consentInfo?.appName }}
-              </div>
-            </div>
-            <!-- Consent Text -->
-            <div class="text-body-1 mb-6">
-              Nếu bạn tiếp tục, Google sẽ chia sẻ tên, địa chỉ email, lựa chọn ưu tiên về ngôn ngữ và ảnh hồ sơ của bạn với {{ consentStore.consentInfo?.appName }}. Hãy xem
-              <a :href="consentStore.consentInfo?.privacyPolicyUrl" class="text-primary text-decoration-none">
-                Chính sách quyền riêng tư
-              </a>
-              và
-              <a :href="consentStore.consentInfo?.termsOfServiceUrl" class="text-primary text-decoration-none">
-                Điều khoản dịch vụ
-              </a>
-              của {{ consentStore.consentInfo?.appName }}.
-            </div>
-
-            <!-- Mobile Footer Text -->
-            <div class="text-body-2 mb-6">
-              Bạn có thể quản lý tính năng Đăng nhập bằng Google trong
-              <a href="https://myaccount.google.com" class="text-primary text-decoration-none">
-                Tài khoản Google
-              </a>
-              của mình.
-            </div>
-
-            <!-- Mobile Actions -->
-            <div class="d-flex justify-space-between mt-6">
-              <v-btn
-                variant="text"
-                color="primary"
-                @click="handleCancel"
-                width="120"
-              >
-                Hủy
-              </v-btn>
-              <v-btn
-                color="primary"
-                @click="handleContinue"
-                width="120"
-              >
-                Tiếp tục
-              </v-btn>
-            </div>
-          </div>
-
-          <!-- Footer - Desktop position -->
-          <div v-if="!isMobile" class="text-center">
-            <template v-if="consentStore.consentInfo">
-              <v-select
-                clearable
-                chips
-                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-                multiple
-                variant="outlined"
-                :value="['Florida']"
-              />
-              <a
-                :href="consentStore.consentInfo.privacyPolicyUrl"
-                target="_blank"
-                class="text-decoration-none text-disabled mr-4"
-              >
-                Quyền riêng tư
-              </a>
-              <span class="text-disabled mx-2">•</span>
-              <a
-                :href="consentStore.consentInfo.termsOfServiceUrl"
-                target="_blank"
-                class="text-decoration-none text-disabled"
-              >
-                Điều khoản
-              </a>
-            </template>
-          </div>
+          </template>
         </v-col>
       </v-row>
     </v-container>
 
-    <!-- Footer - Mobile position -->
-    <div v-if="isMobile" class="py-4 text-center mt-auto">
-      <template v-if="consentStore.consentInfo">
-        <v-select
-          clearable
-          chips
-          :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-          multiple
-          variant="outlined"
-          :value="['Florida']"
-        />
-        <a
-          :href="consentStore.consentInfo.privacyPolicyUrl"
-          target="_blank"
-          class="text-decoration-none text-disabled mr-4"
-        >
-          Quyền riêng tư
-        </a>
-        <span class="text-disabled mx-2">•</span>
-        <a
-          :href="consentStore.consentInfo.termsOfServiceUrl"
-          target="_blank"
-          class="text-decoration-none text-disabled"
-        >
-          Điều khoản
-        </a>
-      </template>
-    </div>
-
-    <!-- Loading & Error States -->
+    <!-- Loading State -->
     <v-overlay
       :model-value="consentStore.loading"
       class="align-center justify-center"
@@ -232,85 +280,72 @@
         size="64"
       />
     </v-overlay>
-
-    <v-snackbar
-      v-model="showError"
-      color="error"
-      timeout="3000"
-      location="top"
-    >
-      {{ consentStore.error }}
-    </v-snackbar>
-
-    <!-- Add preload link for critical resources -->
-    <link
-      v-if="typeof consentStore.consentInfo?.appLogo === 'string'"
-      rel="preload"
-      :href="consentStore.consentInfo?.appLogo"
-      as="image"
-    >
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { useDisplay } from 'vuetify';
-import { useConsentStore } from '@/stores/consent';
+import { onMounted, computed, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useDisplay } from "vuetify";
+import { useConsentStore } from "@/stores/consent";
+// import { useLocaleStore } from "@/stores/locale";
+// import type { Language } from "@/types/locale";
+import router from "@/router";
+// import { consentService } from "@/services/consent";
 
-const router = useRouter();
 const route = useRoute();
 const consentStore = useConsentStore();
+// const localeStore = useLocaleStore();
 const { mobile } = useDisplay();
-const showError = computed(() => !!consentStore.error);
 const isMobile = computed(() => mobile.value);
 
+// localeStore.getLanguages();
+// const languageItems: Array<Language> = localeStore.languages;
+const languageItems = ref([]);
+const applicationName = ref("");
+const scope = ref("");
+
 onMounted(async () => {
-  const clientId = route.query.client_id as string;
-  if (!clientId) {
-    consentStore.error = 'Thiếu thông tin client_id';
+  applicationName.value = route.query.application as string;
+
+  if (!applicationName.value) {
+    router.push('/errors/401')
     return;
   }
-  await consentStore.fetchConsentInfo(clientId);
- debugger
+  scope.value = route.query.scope as string;
+  if (!scope.value) {
+    router.push('/errors/401')
+    return;
+  }
+
+  // await consentStore.fetchConsentInfo(applicationName.value, scope.value);
+  // consentService.getAuth();
+  // localeStore.getLocale();
 });
 
 const handleContinue = () => {
-  // Handle consent acceptance
-  console.log('Consent accepted');
+  // consentService.handleUserConsent('openid', true)
 };
 
 const handleCancel = () => {
-  // Handle consent rejection
-  router.push('/');
+  // consentService.handleUserConsent('openid', false)
+};
+
+const changeLanguage = () => {
+  // localeStore.setLocale(e);
 };
 </script>
 
-<route lang="yaml">
-meta:
-  name: user-consent
-  title: User Consent
-  layout: consent
-</route>
-
 <style scoped>
-.v-card {
-  border: 1px solid rgba(255, 255, 255, 0.12);
+.min-width-200 {
+  min-width: 200px;
 }
 
-ul {
-  list-style-type: none;
-  padding-left: 0;
+.border-b {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-li {
-  position: relative;
-  padding-left: 24px;
-}
-
-li::before {
-  content: "•";
-  position: absolute;
-  left: 8px;
+.border-t {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 </style>
